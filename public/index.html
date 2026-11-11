@@ -1,249 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- add icon link -->
-  <link rel="icon" href="https://icon-library.com/images/chat-app-icon/chat-app-icon-7.jpg" type="image/x-icon">
-  <title>Real Time Chat App Using Google Auth</title>
-  <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
-  <!-- Custom styles for this template -->
-  <link href="css/simple-sidebar.css" rel="stylesheet">
-  <style>
-    body {
-      background: url('https://i.gifer.com/7RN4.gif') no-repeat center center fixed;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-    }
-
-    #commentDiv {
-      background: url('https://i.pinimg.com/originals/8f/ba/cb/8fbacbd464e996966eb9d4a6b7a9c21e.jpg') no-repeat center center fixed;
-      -webkit-background-size: cover;
-      -moz-background-size: cover;
-      -o-background-size: cover;
-      background-size: cover;
-    }
-
-    #comments {
-      font-size: 30px;
-      min-width: 270px;
-
-    }
-
-    #comments:focus {
-      background: linear-gradient(#e6e0e0 0%, #6d9cb8 10%, #b0dbcd 50%, hsl(249, 27%, 85%) 100%);
-      transition: 0.4s linear;
-    }
-
-    #contacts {
-      background: linear-gradient(#90afd8 0%, #99b1be 10%, #667aee 50%, #9f90f8 100%);
-      font-family: 'Kumbh Sans', sans-serif;
-      text-shadow: 2px 2px 2px #1f37be;
-      font-weight: bolder;
-      font-size: 25px;
-    }
-  </style>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Explorer — Fast, Modern File Explorer</title>
+<meta name="description" content="Nova Explorer — a sleek, fast, modern file explorer in your browser. Grid/List, Quick View, tabs, search, real folder access and more.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%236d7cff'/%3E%3Cstop offset='1' stop-color='%23b16bff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='4' y='10' width='56' height='44' rx='10' fill='url(%23g)'/%3E%3Cpath d='M4 22a6 6 0 016-6h13l5 7h26a6 6 0 016 6v19a6 6 0 01-6 6H10a6 6 0 01-6-6z' fill='rgba(255,255,255,.22)'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<div id="app" class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="sidebar" class="sidebar">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="30" height="30"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d7cff"/><stop offset="1" stop-color="#b16bff"/></linearGradient></defs><rect x="3" y="12" width="58" height="42" rx="10" fill="url(#bg1)"/><path d="M5 23a5 5 0 015-5h13l5 7h25a5 5 0 015 5v16a5 5 0 01-5 5H10a5 5 0 01-5-5z" fill="rgba(255,255,255,.25)"/></svg>
+      </div>
+      <div class="brand-text"><strong>Nova</strong><span>EXPLORER</span></div>
+      <button id="btnCollapse" class="icon-btn sidebar-close" title="Close sidebar" aria-label="Close sidebar">✕</button>
+    </div>
 
+    <button id="btnOpenReal" class="open-pc-btn">
+      <span class="open-pc-icon">⤢</span>
+      <span><b>Open folder from PC</b><small id="realSupportHint">Browse real files (Chrome/Edge)</small></span>
+    </button>
 
+    <nav class="nav-section" aria-label="Quick access">
+      <p class="nav-label">Quick Access</p>
+      <div id="quickNav"></div>
+    </nav>
 
+    <nav class="nav-section" aria-label="Library">
+      <p class="nav-label">Library</p>
+      <div id="libraryNav"></div>
+    </nav>
 
+    <nav class="nav-section" aria-label="Tags">
+      <p class="nav-label">Tags</p>
+      <div id="tagNav"></div>
+    </nav>
 
+    <div class="sidebar-spacer"></div>
 
+    <div class="storage-card">
+      <div class="storage-head"><span>◉ Storage</span><button id="btnStorageInfo" class="mini-btn">Details</button></div>
+      <div class="storage-bar"><i id="storageFill"></i></div>
+      <p id="storageText" class="storage-text">—</p>
+      <div class="legend"><span><i class="dot d-img"></i>Images</span><span><i class="dot d-vid"></i>Video</span><span><i class="dot d-doc"></i>Docs</span><span><i class="dot d-oth"></i>Other</span></div>
+    </div>
 
-  <!--//////////////////////////Here is the  start bootstrap///////////////////////////////////-->
+    <div class="sidebar-footer">
+      <button id="btnTheme" class="footer-btn" title="Toggle theme (T)">◐ <span>Theme</span></button>
+      <button id="btnShortcuts" class="footer-btn" title="Keyboard shortcuts (?)">⌘ <span>Shortcuts</span></button>
+      <button id="btnSettings" class="footer-btn" title="Settings">⚙ <span>Settings</span></button>
+    </div>
+  </aside>
+  <div id="sidebarScrim" class="scrim"></div>
 
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <!-- Tabs + top actions -->
+    <header class="titlebar">
+      <button id="btnMenu" class="icon-btn only-mobile" aria-label="Open sidebar">☰</button>
+      <div id="tabs" class="tabs" role="tablist"></div>
+      <button id="btnNewTab" class="icon-btn" title="New tab (Ctrl+T)">＋</button>
+      <div class="titlebar-right">
+        <button id="btnPalette" class="palette-btn" title="Command palette (Ctrl+K)"><span>⌕ Search or command…</span><kbd>Ctrl K</kbd></button>
+        <button id="btnPreviewToggle" class="icon-btn active" title="Toggle preview pane (Ctrl+P)">◧</button>
+      </div>
+    </header>
 
-
-  <div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
-    <div class="badge-light border-right bg-light" style="position: relative; z-index: 100;" id="sidebar-wrapper">
-      <div id="contacts" class="sidebar-heading text-white">Your contacts
-        <button type="button" class="btn btn-outline-primary bg-light" onclick="showIt()">Add</button>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="nav-btns">
+        <button id="btnBack" class="icon-btn" title="Back (Alt+←)">←</button>
+        <button id="btnForward" class="icon-btn" title="Forward (Alt+→)">→</button>
+        <button id="btnUp" class="icon-btn" title="Up one level (Alt+↑)">↑</button>
+        <button id="btnRefresh" class="icon-btn spin-on-click" title="Refresh (F5 / Ctrl+R)">⟳</button>
       </div>
 
-      <div class="list-group list-group-flush">
-        <ol style="font-size: 15px; color: rgb(0, 0, 0); width: fit-content;" id="list">
+      <nav id="breadcrumb" class="breadcrumb" aria-label="Breadcrumb"></nav>
+      <button id="btnEditPath" class="icon-btn" title="Edit path">✎</button>
+      <input id="pathInput" class="path-input hidden" spellcheck="false" aria-label="Path">
 
-        </ol>
-
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="searchInput" type="search" placeholder="Search files…  ( / )" autocomplete="off">
+        <select id="typeFilter" title="Filter by type" aria-label="Filter by type">
+          <option value="all">All types</option><option value="folder">Folders</option><option value="image">Images</option>
+          <option value="video">Videos</option><option value="audio">Audio</option><option value="document">Documents</option>
+          <option value="archive">Archives</option><option value="code">Code</option>
+        </select>
       </div>
     </div>
-    <!-- Page Content -->
-    <div id="page-content-wrapper">
 
-      <nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-light border-bottom">
-        <button style="margin-left: -20px;" class="btn btn-dark" id="menu-toggle">Select Contacts</button>
-
-
-        <div class="container-fluid bg-info text-lg-right" id="UpperDiv">
-          <img src="" id="clientPhoto" alt=""> <span style="font-weight: bolder;" id="clientName"></span> <span
-            id="clientEmail"></span>
+    <!-- Action bar -->
+    <div class="actionbar">
+      <div class="action-group">
+        <button id="btnNew" class="btn primary">＋ New ▾</button>
+        <button id="btnUpload" class="btn">⤒ Upload</button>
+        <input id="fileUpload" type="file" multiple hidden>
+      </div>
+      <div id="selectionActions" class="action-group hidden">
+        <button data-act="open" class="btn">Open</button>
+        <button data-act="copy" class="btn">Copy</button>
+        <button data-act="cut" class="btn">Cut</button>
+        <button data-act="paste" class="btn" id="btnPasteSel">Paste</button>
+        <button data-act="rename" class="btn">Rename</button>
+        <button data-act="duplicate" class="btn">Duplicate</button>
+        <button data-act="star" class="btn">★ Star</button>
+        <button data-act="delete" class="btn danger">Delete</button>
+        <span id="selCount" class="sel-count"></span>
+      </div>
+      <div class="action-group right">
+        <button id="btnPaste" class="btn hidden">Paste here</button>
+        <div class="segmented" role="group" aria-label="Sort">
+          <button id="btnSort" class="btn">↕ Sort: <b id="sortLabel">Name</b> ▾</button>
         </div>
-      </nav>
-
-
-      <div id="commentDiv" style="border-radius: 5px; border:1px solid #1f37be; background-color: aliceblue;">
-        <button id="back" class="btn-lg btn-warning" onclick="back()">Back</button>
-        <ol id="list1">
-
-        </ol>
-
-
-        <h4>Send Message to <span style="color: rgb(38, 11, 110);" id="SendUser"></span></h4>
-        <ol id="list2">
-
-        </ol>
-
-        <br>
-        <hr>
-
-        <input type="text" style="width: 90%; font-size: 25px; " id="comments" placeholder="Enter your message here">
-
-
-
-
-
-        <script>
-          var input = document.getElementById("comments");
-          input.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
-              event.preventDefault();
-              document.getElementById("send").click();
-            }
-          });
-        </script>
-
-
-        <br>
-        <br>
-        <button id="send" type="btn" class="btn btn-primary btn-lg btn-block" onclick="send()">Send Message</button>
-
-
+        <div class="segmented view-switch" role="group" aria-label="View mode">
+          <button id="viewGrid" class="seg active" title="Grid view (Ctrl+1)">▦ Grid</button>
+          <button id="viewList" class="seg" title="List view (Ctrl+2)">☰ List</button>
+        </div>
       </div>
-      <button style="margin-top: 15px; margin-left: 10px;" class="btn btn-danger btn-lg"
-        onclick="logout()">LogOut</button>
     </div>
-    <!-- /#page-content-wrapper -->
 
+    <!-- Content -->
+    <div class="content">
+      <section id="dropZone" class="file-area" tabindex="0" aria-label="Files">
+        <div id="realBanner" class="real-banner hidden">
+          <span>📂 Browsing a <b>real folder from your PC</b> (read-only preview). </span>
+          <button id="btnExitReal" class="mini-btn">← Back to Library</button>
+        </div>
+        <div id="listHeader" class="list-header hidden">
+          <button data-sort="name">NAME <span>↕</span></button>
+          <span>ITEMS</span><button data-sort="size">SIZE <span>↕</span></button>
+          <button data-sort="modified">MODIFIED <span>↕</span></button>
+          <button data-sort="kind">KIND <span>↕</span></button><span></span>
+        </div>
+        <div id="fileContainer" class="file-container grid"></div>
+        <div id="emptyState" class="empty hidden">
+          <div class="empty-art">🗀</div>
+          <h3 id="emptyTitle">This folder is empty</h3>
+          <p id="emptyText">Create a new folder, upload files, or drag &amp; drop files here.</p>
+          <div><button class="btn primary" onclick="document.getElementById('btnNew').click()">＋ New</button>
+          <button class="btn" onclick="document.getElementById('btnUpload').click()">⤒ Upload files</button></div>
+        </div>
+        <div id="dropOverlay" class="drop-overlay hidden"><div>⤒<b>Drop files to add them here</b><span>Images, videos, docs — preview instantly</span></div></div>
+        <div id="rubberBand" class="rubber-band hidden"></div>
+      </section>
+
+      <aside id="previewPane" class="preview-pane">
+        <div id="previewContent"></div>
+      </aside>
+    </div>
+
+    <!-- Status bar -->
+    <footer class="statusbar">
+      <span id="statusLeft">—</span>
+      <span class="status-mid" id="statusMid"></span>
+      <span id="statusRight"></span>
+    </footer>
+  </main>
+</div>
+
+<!-- ============ QUICK VIEW (like Sigma Quick View) ============ -->
+<div id="quickView" class="quickview hidden" role="dialog" aria-modal="true" aria-label="Quick view">
+  <div class="qv-card">
+    <div class="qv-head">
+      <span id="qvTitle">Quick View</span>
+      <div>
+        <button id="qvOpen" class="mini-btn">Open</button>
+        <button id="qvDownload" class="mini-btn">Download</button>
+        <button id="qvClose" class="icon-btn" title="Close (Esc / Space)">✕</button>
+      </div>
+    </div>
+    <button id="qvPrev" class="qv-arrow left" title="Previous (←)">‹</button>
+    <div id="qvBody" class="qv-body"></div>
+    <button id="qvNext" class="qv-arrow right" title="Next (→)">›</button>
+    <div id="qvFilmstrip" class="qv-filmstrip"></div>
+    <p class="qv-hint">Press <kbd>Space</kbd> or <kbd>Esc</kbd> to close &nbsp;·&nbsp; <kbd>←</kbd>/<kbd>→</kbd> previous or next file</p>
   </div>
-  <!-- /#wrapper -->
+</div>
 
+<!-- ============ CONTEXT MENU / MENUS / MODALS ============ -->
+<div id="contextMenu" class="menu hidden"></div>
+<div id="dropdownMenu" class="menu hidden"></div>
 
-
-  <!--//////////////////////////Here is the  start bootstrap///////////////////////////////////-->
-
-
-
-  <div id="Add" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="modal-title">
-            <h3>Add Friends</h3><span>Note:(the users you add will appear in the left sidebar select the one to start
-              chat</span>
-          </div>
-          <button type="button" class="close" data-dismiss="modal" onclick="closeIt()" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div style="color: rgb(7, 30, 73); border:3px solid black;">
-
-            <h4>Email Address</h4>
-            <input class="bg-light" style="font-size: 20px;width: 80%;" type="email"
-              placeholder="Enter the email to add user" required id="addUser">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeIt()">Close</button>
-          <button type="button" id="add" class="btn btn-primary" onclick="addUser()">Add to Contacts</button>
-        </div>
-      </div>
-    </div>
+<div id="modalBackdrop" class="modal-backdrop hidden">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head"><h3 id="modalTitle">Dialog</h3><button id="modalClose" class="icon-btn">✕</button></div>
+    <div id="modalBody" class="modal-body"></div>
+    <div id="modalFoot" class="modal-foot"></div>
   </div>
+</div>
 
+<div id="palette" class="palette hidden" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="palette-card">
+    <input id="paletteInput" placeholder="Type a command or search files…" autocomplete="off">
+    <div id="paletteResults" class="palette-results"></div>
+    <p class="palette-hint"><kbd>↑↓</kbd> navigate · <kbd>Enter</kbd> run · <kbd>Esc</kbd> close</p>
+  </div>
+</div>
 
-  <script>
-    var input = document.getElementById("addUser");
-    input.addEventListener("keyup", function (event) {
-      if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById("add").click();
-      }
-    });
-  </script>
-
-
-
-
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-app.js"></script>
-
-  <script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
-
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-auth.js"></script>
-
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-        https://firebase.google.com/docs/web/setup#available-libraries -->
-  <script src="https://www.gstatic.com/firebasejs/7.19.1/firebase-analytics.js"></script>
-
-  <script>
-    // Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyBBPE4N7LMesurO0pKA2hE3bxHPlGXrYEg",
-    authDomain: "chatonlinein2021.firebaseapp.com",
-    databaseURL: "https://chatonlinein2021-default-rtdb.firebaseio.com",
-    projectId: "chatonlinein2021",
-    storageBucket: "chatonlinein2021.appspot.com",
-    messagingSenderId: "899873376755",
-    appId: "1:899873376755:web:20206f6bf50d68f20bea86",
-    measurementId: "G-SVJR0M32MT"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
-  </script>
-
-
-
-
-
-
-
-
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-    integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-    crossorigin="anonymous"></script>
-
-
-  <!-- Menu Toggle Script -->
-  <script>
-    $("#menu-toggle").click(function (e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-  </script>
-</body>
+<div id="toasts" class="toasts" aria-live="polite"></div>
 
 <script src="app.js"></script>
-
+</body>
 </html>
